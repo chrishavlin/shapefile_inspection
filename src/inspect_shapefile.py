@@ -48,7 +48,7 @@ class field_description(object):
                 rec=sf.record(shapeid)[field_names.index(self.fieldname)]
                 if rec:
                    self.field_type=str(type(rec)).split("'")[1]
-                   print 'data type found', self.field_type
+                   print 'data type found:', self.field_type
                 shapeid += 1
    
       def get_unique_rec_values(self,sf):
@@ -78,8 +78,7 @@ class field_description(object):
  
 def create_xml_file(sf,savedir,basename):
     metadata = ET.Element("metadata")
-    eainfo = ET.SubElement(metadata, "eainfo")
-    detailed = ET.SubElement(eainfo,"detailed",name=basename)
+    filename = ET.SubElement(metadata,"filename",name=basename)
 
 
     fld = sf.fields[1:]
@@ -100,7 +99,7 @@ def create_xml_file(sf,savedir,basename):
 
         if np.remainder(int(pct_comp),10)==0 and int(pct_comp) != pct_0:
            pct_0=pct_comp
-           print shapeid, 'of', nshapes, ' shapes (', pct_comp,'% )'
+           print 'processing',shapeid, 'of', nshapes, ' shapes (', pct_comp,'% )'
 
         # remove the empty fieldnames
         b= rec[:]
@@ -130,17 +129,13 @@ def create_xml_file(sf,savedir,basename):
                
         shapeid+=1
 
-    print fields0
-    print dtypes
-
     for field in fields0:
-        attr = ET.SubElement(detailed,"attr",name=field)
-        ET.SubElement(attr, "attrlbl",name="record label").text = field
+        attr = ET.SubElement(filename,"attr",name=field)
         ET.SubElement(attr, "attrtype",name="data type").text = dtypes[fields0.index(field)]
 
         atts = attr_list[fields0.index(field)]
         attsamp_lab='unique str values'
-        if len(atts)>25:
+        if len(atts)>40:
            attprint=str(atts[0:30]).replace("'","")
            attsamp_lab='sample of str values'
         elif dtypes[fields0.index(field)]!= 'str':
@@ -150,12 +145,7 @@ def create_xml_file(sf,savedir,basename):
            attprint=str(atts[:]).replace("'","")
            attsamp_lab='unique str values'
 
-        ET.SubElement(attr, "attsamp",name=attsamp_lab).text = attprint
-
-        # if string with small number of types
-#        #ET.SubElement(attr, "attrrange").text = "range"
-#        # if a number, just use min/max 
-#        #  self.field_type=None
+        ET.SubElement(attr, "attrvals",name=attsamp_lab).text = attprint
     
     tree = ET.ElementTree(metadata)
     tree.write(savedir+basename+"_auto.xml")
@@ -181,29 +171,35 @@ if __name__ == '__main__':
    sf = shapefile.Reader(dat_dir+shp_file_base)
    print '... shapefile loaded! \n'
 
-#   # pull out the fields
-#   fld = sf.fields[1:]
-#   field_names = [field[0] for field in fld]
-#   print 'Shapefile has the following field names'
-#   print field_names,'\n'
-#   field_of_interest=raw_input("Enter field name to investigate: ")
-#
-#   # process the shapefile
-#   field_obj=field_description(field_of_interest) # store field name 
-#   field_obj.get_field_type(sf) # find field data type
-#   field_obj.get_unique_rec_values(sf) # find unique values
-#
-#   print '---------------------------------------'
-#   print 'Shapefile has the following field names'
-#   print field_names
-#   print '\n The field name',field_obj.fieldname,' is ',field_obj.field_type
-#   print 'and has',len(field_obj.rec_vals),'unique values'
-#
-#   Y_N=raw_input("Display Values? (Y/N) ")
-#   if Y_N=='Y':
-#      print ' possible values:'
-#      print field_obj.rec_vals
+   # pull out the fields
+   fld = sf.fields[1:]
+   field_names = [field[0] for field in fld]
+   print 'Shapefile has the following field names'
+   print field_names,'\n'
 
-   if raw_input("Create XML file? (Y/N) ")=='Y':
+   to_do=raw_input("Do you want to investigate single field (single)? Generate xml file (xml)? Or both (both)? ")
+
+   if to_do == 'single' or to_do == 'both':
+      field_of_interest=raw_input("Enter field name to investigate: ")
+   
+      # process the shapefile
+      field_obj=field_description(field_of_interest) # store field name 
+      field_obj.get_field_type(sf) # find field data type
+      field_obj.get_unique_rec_values(sf) # find unique values
+   
+      print '---------------------------------------'
+      print 'Shapefile has the following field names'
+      print field_names
+      print '\n The field name',field_obj.fieldname,' is ',field_obj.field_type
+      print 'and has',len(field_obj.rec_vals),'unique values'
+   
+      Y_N=raw_input("Display Values? (Y/N) ")
+      if Y_N=='Y':
+         print ' possible values:'
+         print field_obj.rec_vals
+
+   if to_do == 'xml' or to_do == 'both':
+      print '\nBuilding xml file...'
       create_xml_file(sf,dat_dir,shp_file_base)
+      print '... Finished building xml file!'
 
