@@ -1,0 +1,75 @@
+shapefile inspection!
+
+Copyright (C) 2016  Chris Havlin, <https://chrishavlin.wordpress.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-------------------------------------------------------------------------------------
+
+                                (BRIEF) DESCRIPTION
+
+A Python module to inspect and generate metadata for a shapefile that has none...
+
+-------------------------------------------------------------------------------------
+
+                                   DEPENDENCIES
+
+Python Libraries:
+
+   pyshyp 
+   numpy
+   xml (should be included in your python packages by default)
+
+Written in python 2.7. Python 3 will probably throw some errors because 
+raw_input() has been replaced with just input().
+
+-------------------------------------------------------------------------------------
+
+                                  USAGE AND NOTES
+ ______________
+|              |
+| Quick Start! |
+|______________|
+
+After you have the dependencies, cd into the src directory and then
+
+    $ python inspect_shapefile.py
+
+The program will walk you through some options. After entering the path and name
+of your shapefile (or choosing to use a hard-wired path in inspect_shapefile.py), 
+you can choose to
+
+    (1) investigate a single record field (type in single)
+    (2) generate an xml file (type in xml)
+    (3) do both (type in both)
+
+The program will ask you a few more self-evident questions along the way...
+
+If you generated an xml file, open it up in an internet browser and you can 
+click through the information tree. 
+
+ _______
+|       |
+| Notes |
+|_______|
+
+I originally wrote this in order to streamline the process of exploring new 
+shapefiles that don't have any corresponding metadata (arg!). When using the 
+code, you can either choose a single field from the shapefile records to explore 
+or you can generate an xml file for all the fields. "Exploring" a shapefile 
+here means finding the name or label of all the records, finding the data
+type of each record and generating a sample of some kind for each record. 
+
+The xml file that is generated is not any standard format. It could be improved. 
+
