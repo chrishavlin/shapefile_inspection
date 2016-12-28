@@ -136,7 +136,7 @@ def create_xml_file(sf,savedir,basename):
         atts = attr_list[fields0.index(field)]
         attsamp_lab='unique str values'
         if len(atts)>40:
-           attprint=str(atts[0:30]).replace("'","")
+           attprint=str(atts[0:40]).replace("'","")
            attsamp_lab='sample of str values'
         elif dtypes[fields0.index(field)]!= 'str':
            attprint=str(atts[:]).replace("'","")
